@@ -1,40 +1,14 @@
-const { Client, CommandInteraction} = require("discord.js")
-
 module.exports = {
-    name : 'kick',
-    description : 'kicks a member',
-    userPermissions : ['ADMINISTRATOR'],
-    options : [
-        {
-            name : 'target',
-            desrcription: 'target to be kicked',
-            type : 'USER',
-            required: true
-        },
-        {
-            name : 'reason',
-            description: 'reason for kick',
-            type : 'STRING',
-            required : false
+    name : "kick",
+    async execute(message, client){
+        if(!message.member._roles.includes('923632025058025493')){
+            message.reply('You do not have permission')
+            return
         }
-    ],
+    
 
-    /**
-     * 
-     * @param {Client} client 
-     * @param {CommandInteraction} interaction 
-     * @param {String[]} args 
-     */
-    run : async(interaction) => {
-        const target = interaction.options.getMember('target');
-        const reason = interaction.options.getString('reason') || "No reason provided";
-
-        if(target.roles.highest.position >= interaction.member.roles.highest.position) return interaction.followUp({ content: 'You cannot take action on this user as their role is higher than yours. '});
-
-         await target.send(`You have been kicked from ${interaction.guild.name}, reason: ${reason}`);
-        target.kick(reason);
-
-        interaction.followUp({content : `Kicked ${target.user.tag} successfully! reason: ${reason}`})
-
-    },
-};
+        let command = message.content.split(' ')
+        let kickedmember = await message.guild.fetchMember(command[1]);
+        console.log(kickedmember)
+    }
+}
