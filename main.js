@@ -16,7 +16,9 @@ const client = new Client({ intents: [
     Intents.FLAGS.DIRECT_MESSAGES,
     
 ], partials: [
-    'CHANNEL', // Required to receive DMs
+    'CHANNEL',  // Required to receive DMs
+    'MESSAGE',
+    'REACTION'
 ]});
 
 
@@ -30,7 +32,6 @@ client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync("./Commands/").filter(file => file.endsWith(".js"));
 
-const kickcmd = require('./Commands/kick.js')
 
 const privateMsg = require('./Commands/privatemsg.js')
 
@@ -110,20 +111,7 @@ client.on('messageCreate', async(message) => {
     }
 
     if(command.includes(prefix + 'kick')){
-        let target = command.replace(`${prefix}kick `, ``)
-        let guild = client.guilds.cache.get('901200391205687346')
-        target = guild.members.cache.get(target)
-        console.log(target)
-        // target = client.members.cache.find(user => user.id === 'USER-ID')
-        client.commands.get('kick').run({
-            target: target, 
-             member: message.member
-            })
-        // client.commands.get('kick').run()
-       
-        
-       
-        
+        client.commands.get('kick').execute(message, client);
     }
    
 
@@ -132,10 +120,10 @@ client.on('messageCreate', async(message) => {
 
 client.on('guildMemberAdd', member => {
     member.guild.channels.cache.get('901200391205687350').send(`**Welcome to the server, <@${member.user.id}>!**`);
+    console.log('User@' + member.user.tag + 'has joined the server!');
+    var role = member.guild.roles.cache.find(role => role.name == "967072446719090749")
+    member.roles.add(role);
 });
-
-
-
 
 
 
