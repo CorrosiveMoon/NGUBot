@@ -112,6 +112,10 @@ client.on('messageCreate', async(message) => {
 
     if(command.includes(prefix + 'kick')){
         client.commands.get('kick').execute(message, client);
+
+    }
+    if(command.includes(prefix + 'ban')){
+        client.commands.get('ban').execute(message, client);
     }
    
 
@@ -119,10 +123,11 @@ client.on('messageCreate', async(message) => {
 });
 
 client.on('guildMemberAdd', member => {
-    member.guild.channels.cache.get('901200391205687350').send(`**Welcome to the server, <@${member.user.id}>!**`);
+    // member.guild.channels.cache.get('901200391205687350').send(`**Welcome to the server, <@${member.user.id}>!**`); not working
     console.log('User@' + member.user.tag + 'has joined the server!');
-    var role = member.guild.roles.cache.find(role => role.name == "967072446719090749")
-    member.roles.add(role);
+    // var role = member.guild.roles.cache.find(role => role.name == "967072446719090749")
+    // member.roles.add(role); 
+    // throws an error
 });
 
 
