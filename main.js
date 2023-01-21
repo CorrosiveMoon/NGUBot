@@ -1,41 +1,37 @@
 const { Client, Collection, Intents } = require('discord.js');
 
-const { wordFilter} = require("./filter.json");
+const { wordFilter } = require("./filter.json");
 
-const {clientId, guildId, token, prefix} = require('./config.json');
+const { clientId, guildId, token, prefix } = require('./config.json');
 
 const Discord = require('discord.js')
 
-const client = new Client({ intents: [
-    Intents.FLAGS.GUILDS, 
-    Intents.FLAGS.GUILD_MESSAGES, 
-    Intents.FLAGS.GUILD_MEMBERS, 
-    Intents.FLAGS.GUILD_BANS, 
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS, 
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.DIRECT_MESSAGES,
-    
-], partials: [
-    'CHANNEL',  // Required to receive DMs
-    'MESSAGE',
-    'REACTION'
-]});
+const client = new Client({
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_BANS,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.DIRECT_MESSAGES,
+
+    ]
+});
 
 
 const fs = require('fs');
 
 const giveMeaJoke = require('discord-jokes');
 
-const { sensitiveHeaders } = require('http2');
-
-client.commands = new Discord.Collection();    
+client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync("./Commands/").filter(file => file.endsWith(".js"));
 
 
 const privateMsg = require('./Commands/privatemsg.js')
 
-for(const file of commandFiles){
+for (const file of commandFiles) {
     const command = require(`./Commands/${file}`);
 
     client.commands.set(command.name, command);
@@ -43,78 +39,89 @@ for(const file of commandFiles){
 
 
 
- 
+
 client.once('ready', () => {
     console.log('Bot is now available!');
 });
 
 
 
-client.on('messageCreate', async(message) => {
+client.on('messageCreate', async (message) => {
 
 
 
     const command = message.content;
 
-//Profanity Filter
+    //Profanity Filter
 
-    if(message.author.id == "909209531811242044"){
+    if (message.author.id == "909209531811242044") {
         return
     }
-    
 
 
-    for(word of wordFilter){
-        if(message.content.toLowerCase().includes(word.toLowerCase())) {
+
+    for (word of wordFilter) {
+        if (message.content.toLowerCase().includes(word.toLowerCase())) {
             message.delete();
-        message.channel.send('Be Polite, no swearing please')
-        
-        }
-        
-    }
-    
-//End of Profanity Filter
+            message.channel.send('Be Polite, no swearing please')
 
-    if(message.channel.type === 'DM'){
+        }
+
+    }
+
+    //End of Profanity Filter
+
+    if (message.channel.type === 'DM'){
         privateMsg(client, message)
 
-}
+    }
 
 
-    if(message.content == 'Hello')message.reply("Hello!");
+    if (message.content == 'Hello') message.reply("Hello!");
 
-    if(command == prefix + 'Ping'){
+    if (command == prefix + 'Ping') {
         client.commands.get('Ping').execute(message, command);
 
 
     }
 
-    if(command == prefix + 'ReactionRoles'){
+    if (command == prefix + 'ReactionRoles') {
         client.commands.get('ReactionRoles').execute(message, Discord, client);
     }
 
 
-    if(!message.content.startsWith(prefix)) return;
-    
-    if(message.content.toLowerCase()==  prefix + 'hello'){
+    if (!message.content.startsWith(prefix)) return;
+
+    if (message.content.toLowerCase() == prefix + 'hello') {
         message.reply('Hello!');
 
-    }if(command == prefix + 'Website'){
+    } if (command == prefix + 'Website') {
         client.commands.get('Website').execute(message, command);
     }
 
-    if(message.content.toLowerCase()== prefix + 'joke'){
-        giveMeaJoke.getRandomDadJoke(function(joke){!
+    if(message.content.toLowerCase() == prefix + 'joke'){
+        giveMeaJoke.getRandomDadJoke(function (joke) {
+            !
             message.reply(joke);
         });
-   
+
     }
 
-    if(command.includes(prefix + 'kick')){
+    // if (command.includes(prefix + 'kick')) {
+    //     client.commands.get('kick').execute(message, client);
+    // }
+
+    if (message.content.startsWith(prefix+ 'kick')){
         client.commands.get('kick').execute(message, client);
     }
-   
 
+    if(command.startsWith(prefix + 'SendDM')){
+        client.commands.get('SendDM').execute(message, client);
+    }
+
+    if(command.startsWith(prefix + 'ban')){
+        client.commands.get('ban').execute(message, client);
+    }
 
 });
 

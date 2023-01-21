@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Client} = require("discord.js");
 const { description } = require("./ping");
 
 module.exports = {
@@ -36,6 +36,12 @@ module.exports = {
         messageEmbeded.react(SOEPemoji);
         messageEmbeded.react(SOITemoji);
         messageEmbeded.react(SOEemoji);
+
+        client.on('messageReactionAdd', async(reaction, user) => {
+
+        })
+
+        
 
     }
 }
